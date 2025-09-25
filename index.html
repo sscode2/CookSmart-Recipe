@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CookSmart - Recipe & Measurement Converter</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #FF7B54;
+            --secondary: #4CAF50;
+            --light: #FFF5E1;
+            --dark: #333333;
+            --white: #FFFFFF;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--dark);
+            background-color: var(--light);
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 1rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--white);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .logo i {
+            font-size: 2rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-links a.active {
+            color: var(--primary);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--primary);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 80px 0;
+            background: linear-gradient(135deg, rgba(255,123,84,0.1) 0%, rgba(76,175,80,0.1) 100%);
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 30px;
+            color: var(--dark);
+        }
+
+        /* Converter Section */
+        .converter-section {
+            padding: 80px 0;
+            background-color: var(--white);
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .section-title:after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: var(--primary);
+            margin: 10px auto;
+            border-radius: 2px;
+        }
+
+        .converter-container {
+            background-color: var(--light);
+            border-radius: var(--radius);
+            padding: 30px;
+            box-shadow: var(--shadow);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .converter-input-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .converter-input {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .converter-input label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .converter-input input, .converter-input select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+
+        .converter-input input:focus, .converter-input select:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        .converter-result {
+            background-color: var(--white);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+            font-size: 1.2rem;
+            min-height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .converter-result span {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 1.4rem;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background-color: #ff6b3d;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary);
+        }
+
+        .btn-secondary:hover {
+            background-color: #3d8b40;
+        }
+
+        /* Recipes Section */
+        .recipes-section {
+            padding: 80px 0;
+            background-color: var(--light);
+        }
+
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto 40px;
+            position: relative;
+        }
+
+        .search-container input {
+            width: 100%;
+            padding: 15px 50px 15px 20px;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            font-size: 1rem;
+            box-shadow: var(--shadow);
+        }
+
+        .search-container i {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .recipes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .recipe-card {
+            background-color: var(--white);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s;
+        }
+
+        .recipe-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .recipe-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .recipe-content {
+            padding: 20px;
+        }
+
+        .recipe-title {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .recipe-description {
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+
+        .recipe-actions {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Recipe Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background-color: var(--white);
+            border-radius: var(--radius);
+            max-width: 900px;
+            margin: 40px auto;
+            position: relative;
+            animation: modalFade 0.3s;
+        }
+
+        @keyframes modalFade {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--dark);
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .modal-header {
+            padding: 30px 30px 0;
+        }
+
+        .modal-body {
+            padding: 20px 30px 30px;
+        }
+
+        .modal-img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: var(--radius);
+            margin-bottom: 20px;
+        }
+
+        .ingredients-list, .steps-list {
+            margin-bottom: 30px;
+        }
+
+        .ingredients-list h3, .steps-list h3 {
+            margin-bottom: 15px;
+            color: var(--primary);
+            border-bottom: 2px solid var(--light);
+            padding-bottom: 5px;
+        }
+
+        .ingredients-list ul, .steps-list ol {
+            padding-left: 20px;
+        }
+
+        .ingredients-list li, .steps-list li {
+            margin-bottom: 10px;
+        }
+
+        .recipe-meta {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #666;
+        }
+
+        /* Favorites Section */
+        .favorites-section {
+            padding: 80px 0;
+            background-color: var(--white);
+        }
+
+        .favorites-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+
+        .empty-favorites {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .empty-favorites i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: #ddd;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: var(--white);
+            padding: 60px 0 30px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-column h3 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+
+        .footer-column p {
+            margin-bottom: 15px;
+            color: #ccc;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: var(--white);
+            transition: all 0.3s;
+        }
+
+        .social-links a:hover {
+            background-color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background-color: var(--white);
+                flex-direction: column;
+                padding: 20px;
+                box-shadow: var(--shadow);
+                gap: 15px;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+
+            .converter-input-group {
+                flex-direction: column;
+            }
+
+            .recipe-actions {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .recipe-actions .btn {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <a href="#" class="logo">
+                    <i class="fas fa-utensils"></i>
+                    CookSmart
+                </a>
+                <div class="nav-links">
+                    <a href="#" class="active">Home</a>
+                    <a href="#converter">Converter</a>
+                    <a href="#recipes">Recipes</a>
+                    <a href="#favorites">Favorites</a>
+                </div>
+                <button class="mobile-menu-btn">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Cook Smart with Easy Conversions 🍳</h1>
+            <p>Convert cooking measurements instantly and discover delicious recipes with step-by-step instructions. Your kitchen companion for stress-free cooking!</p>
+            <a href="#converter" class="btn">Try Converter Now</a>
+        </div>
+    </section>
+
+    <!-- Converter Section -->
+    <section id="converter" class="converter-section">
+        <div class="container">
+            <h2 class="section-title">Measurement Converter</h2>
+            <div class="converter-container">
+                <div class="converter-input-group">
+                    <div class="converter-input">
+                        <label for="amount">Amount</label>
+                        <input type="number" id="amount" placeholder="e.g., 2" min="0" step="0.1" value="2">
+                    </div>
+                    <div class="converter-input">
+                        <label for="unit">From Unit</label>
+                        <select id="unit">
+                            <option value="cup">Cup</option>
+                            <option value="tbsp">Tablespoon (tbsp)</option>
+                            <option value="tsp">Teaspoon (tsp)</option>
+                            <option value="oz">Ounce (oz)</option>
+                        </select>
+                    </div>
+                    <div class="converter-input">
+                        <label for="ingredient">Ingredient</label>
+                        <select id="ingredient">
+                            <option value="flour">Flour</option>
+                            <option value="sugar">Sugar</option>
+                            <option value="salt">Salt</option>
+                            <option value="rice">Rice</option>
+                            <option value="butter">Butter</option>
+                            <option value="milk">Milk</option>
+                            <option value="water">Water</option>
+                            <option value="oil">Oil</option>
+                        </select>
+                    </div>
+                </div>
+                <button id="convert-btn" class="btn">Convert</button>
+                <div class="converter-result">
+                    <p id="result-text">Enter values and click convert</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recipes Section -->
+    <section id="recipes" class="recipes-section">
+        <div class="container">
+            <h2 class="section-title">Popular Recipes</h2>
+            <div class="search-container">
+                <input type="text" id="recipe-search" placeholder="Search recipes...">
+                <i class="fas fa-search"></i>
+            </div>
+            <div class="recipes-grid" id="recipes-grid">
+                <!-- Recipe cards will be generated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Favorites Section -->
+    <section id="favorites" class="favorites-section">
+        <div class="container">
+            <h2 class="section-title">Your Favorite Recipes</h2>
+            <div class="favorites-grid" id="favorites-grid">
+                <!-- Favorite recipes will be populated by JavaScript -->
+            </div>
+            <div id="empty-favorites" class="empty-favorites">
+                <i class="far fa-heart"></i>
+                <h3>No favorite recipes yet</h3>
+                <p>Start adding recipes to your favorites by clicking the heart icon</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>About CookSmart</h3>
+                    <p>Your go-to kitchen companion for measurement conversions and delicious recipes. Cook with confidence using our easy-to-use tools.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-pinterest"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <a href="#"><p>Home</p></a>
+                    <a href="#converter"><p>Converter Tool</p></a>
+                    <a href="#recipes"><p>Recipe Collection</p></a>
+                    <a href="#favorites"><p>Your Favorites</p></a>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact Us</h3>
+                    <p><i class="fas fa-envelope"></i> hello@cooksmart.com</p>
+                    <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
+                    <p><i class="fas fa-map-marker-alt"></i> 123 Kitchen Street, Foodville</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 CookSmart. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Recipe Modal -->
+    <div id="recipe-modal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal">&times;</button>
+            <div class="modal-header">
+                <h2 id="modal-title">Recipe Title</h2>
+                <div class="recipe-meta">
+                    <div class="meta-item"><i class="fas fa-clock"></i> <span id="modal-time">30 mins</span></div>
+                    <div class="meta-item"><i class="fas fa-user-friends"></i> <span id="modal-servings">4 servings</span></div>
+                    <div class="meta-item"><i class="fas fa-fire"></i> <span id="modal-calories">350 cal</span></div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <img id="modal-image" src="" alt="Recipe" class="modal-img">
+                <div class="ingredients-list">
+                    <h3>Ingredients</h3>
+                    <ul id="modal-ingredients">
+                        <!-- Ingredients will be populated by JavaScript -->
+                    </ul>
+                </div>
+                <div class="steps-list">
+                    <h3>Instructions</h3>
+                    <ol id="modal-steps">
+                        <!-- Steps will be populated by JavaScript -->
+                    </ol>
+                </div>
+                <div class="recipe-actions">
+                    <button id="favorite-btn" class="btn"><i class="far fa-heart"></i> Add to Favorites</button>
+                    <button id="share-btn" class="btn btn-secondary"><i class="fas fa-share-alt"></i> Share Recipe</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Conversion data
+        const conversionData = {
+            flour: { cup: 120, tbsp: 7.5, tsp: 2.5, oz: 4.25 },
+            sugar: { cup: 200, tbsp: 12.5, tsp: 4.2, oz: 7.05 },
+            salt: { cup: 292, tbsp: 18, tsp: 6, oz: 10.3 },
+            rice: { cup: 200, tbsp: 12.5, tsp: 4.2, oz: 7.05 },
+            butter: { cup: 227, tbsp: 14.2, tsp: 4.7, oz: 8 },
+            milk: { cup: 240, tbsp: 15, tsp: 5, oz: 8.45 },
+            water: { cup: 240, tbsp: 15, tsp: 5, oz: 8.45 },
+            oil: { cup: 224, tbsp: 14, tsp: 4.7, oz: 7.9 }
+        };
+
+        // Recipe data
+        const recipes = [
+            {
+                id: 1,
+                title: "Classic Chocolate Chip Cookies",
+                description: "Soft and chewy chocolate chip cookies that are perfect for any occasion.",
+                image: "https://images.unsplash.com/photo-1499636136210-6f4ee915583e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+                time: "25 mins",
+                servings: "12 cookies",
+                calories: "180 cal",
+                ingredients: [
+                    "2 1/4 cups all-purpose flour",
+                    "1 tsp baking soda",
+                    "1 tsp salt",
+                    "1 cup butter, softened",
+                    "3/4 cup granulated sugar",
+                    "3/4 cup packed brown sugar",
+                    "2 large eggs",
+                    "2 tsp vanilla extract",
+                    "2 cups chocolate chips"
+                ],
+                steps: [
+                    "Preheat oven to 375°F (190°C).",
+                    "In a small bowl, mix flour, baking soda, and salt.",
+                    "In a large bowl, beat butter, granulated sugar, brown sugar, and vanilla until creamy.",
+                    "Add eggs one at a time, beating well after each addition.",
+                    "Gradually beat in flour mixture.",
+                    "Stir in chocolate chips.",
+                    "Drop by rounded tablespoon onto ungreased baking sheets.",
+                    "Bake for 9 to 11 minutes or until golden brown.",
+                    "Cool on baking sheets for 2 minutes; remove to wire racks to cool completely."
+                ]
+            },
+            {
+                id: 2,
+                title: "Creamy Mushroom Pasta",
+                description: "A rich and creamy pasta dish with sautéed mushrooms and herbs.",
+                image: "https://images.unsplash.com/photo-1476124369491-e7addf5db371?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+                time: "30 mins",
+                servings: "4 servings",
+                calories: "420 cal",
+                ingredients: [
+                    "12 oz fettuccine pasta",
+                    "2 tbsp olive oil",
+                    "1 lb mushrooms, sliced",
+                    "3 cloves garlic, minced",
+                    "1 cup heavy cream",
+                    "1/2 cup grated Parmesan cheese",
+                    "2 tbsp fresh parsley, chopped",
+                    "Salt and pepper to taste"
+                ],
+                steps: [
+                    "Cook pasta according to package directions; drain and set aside.",
+                    "Heat olive oil in a large skillet over medium heat.",
+                    "Add mushrooms and cook until browned and tender, about 8 minutes.",
+                    "Add garlic and cook for 1 minute until fragrant.",
+                    "Stir in heavy cream and bring to a simmer.",
+                    "Add Parmesan cheese and stir until melted and sauce has thickened.",
+                    "Season with salt and pepper to taste.",
+                    "Add cooked pasta to the skillet and toss to coat in the sauce.",
+                    "Garnish with fresh parsley before serving."
+                ]
+            },
+            {
+                id: 3,
+                title: "Avocado Toast with Poached Egg",
+                description: "A healthy and satisfying breakfast option that's quick to make.",
+                image: "https://images.unsplash.com/photo-1482049016688-2d3e1b311543?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+                time: "15 mins",
+                servings: "2 servings",
+                calories: "280 cal",
+                ingredients: [
+                    "2 slices sourdough bread",
+                    "1 ripe avocado",
+                    "1 tbsp lemon juice",
+                    "2 eggs",
+                    "Salt and pepper to taste",
+                    "Red pepper flakes (optional)",
+                    "Microgreens for garnish"
+                ],
+                steps: [
+                    "Toast the sourdough bread until golden and crisp.",
+                    "Cut the avocado in half, remove the pit, and scoop the flesh into a bowl.",
+                    "Mash the avocado with lemon juice, salt, and pepper.",
+                    "Bring a pot of water to a gentle simmer and add a splash of vinegar.",
+                    "Crack each egg into a small cup, then gently slide into the simmering water.",
+                    "Poach eggs for 3-4 minutes for runny yolks.",
+                    "Spread the mashed avocado evenly on the toast.",
+                    "Top each toast with a poached egg.",
+                    "Season with salt, pepper, and red pepper flakes if using.",
+                    "Garnish with microgreens and serve immediately."
+                ]
+            },
+            {
+                id: 4,
+                title: "Vegetable Stir Fry",
+                description: "A quick and healthy stir fry packed with colorful vegetables.",
+                image: "https://images.unsplash.com/photo-1512058564366-18510be2db19?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+                time: "20 mins",
+                servings: "4 servings",
+                calories: "220 cal",
+                ingredients: [
+                    "2 tbsp vegetable oil",
+                    "1 onion, sliced",
+                    "2 bell peppers, sliced",
+                    "2 carrots, julienned",
+                    "1 cup broccoli florets",
+                    "1 cup snap peas",
+                    "3 cloves garlic, minced",
+                    "1 tbsp ginger, grated",
+                    "3 tbsp soy sauce",
+                    "1 tbsp honey",
+                    "1 tsp sesame oil",
+                    "Sesame seeds for garnish"
+                ],
+                steps: [
+                    "Heat vegetable oil in a large wok or skillet over high heat.",
+                    "Add onions and stir-fry for 2 minutes until slightly softened.",
+                    "Add bell peppers, carrots, and broccoli; stir-fry for 4-5 minutes.",
+                    "Add snap peas, garlic, and ginger; cook for another 2 minutes.",
+                    "In a small bowl, mix soy sauce, honey, and sesame oil.",
+                    "Pour the sauce over the vegetables and toss to coat.",
+                    "Cook for 1-2 minutes until the sauce thickens slightly.",
+                    "Garnish with sesame seeds and serve over rice or noodles."
+                ]
+            }
+        ];
+
+        // DOM Elements
+        const amountInput = document.getElementById('amount');
+        const unitSelect = document.getElementById('unit');
+        const ingredientSelect = document.getElementById('ingredient');
+        const convertBtn = document.getElementById('convert-btn');
+        const resultText = document.getElementById('result-text');
+        const recipeSearch = document.getElementById('recipe-search');
+        const recipesGrid = document.getElementById('recipes-grid');
+        const favoritesGrid = document.getElementById('favorites-grid');
+        const emptyFavorites = document.getElementById('empty-favorites');
+        const recipeModal = document.getElementById('recipe-modal');
+        const closeModal = document.querySelector('.close-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalImage = document.getElementById('modal-image');
+        const modalTime = document.getElementById('modal-time');
+        const modalServings = document.getElementById('modal-servings');
+        const modalCalories = document.getElementById('modal-calories');
+        const modalIngredients = document.getElementById('modal-ingredients');
+        const modalSteps = document.getElementById('modal-steps');
+        const favoriteBtn = document.getElementById('favorite-btn');
+        const shareBtn = document.getElementById('share-btn');
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const navLinks = document.querySelector('.nav-links');
+
+        // Current recipe in modal
+        let currentRecipe = null;
+
+        // Initialize the app
+        function init() {
+            // Set up event listeners
+            convertBtn.addEventListener('click', convertMeasurement);
+            recipeSearch.addEventListener('input', filterRecipes);
+            closeModal.addEventListener('click', () => recipeModal.style.display = 'none');
+            favoriteBtn.addEventListener('click', toggleFavorite);
+            shareBtn.addEventListener('click', shareRecipe);
+            mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', (e) => {
+                if (e.target === recipeModal) {
+                    recipeModal.style.display = 'none';
+                }
+            });
+            
+            // Display recipes
+            displayRecipes(recipes);
+            
+            // Load favorites from localStorage
+            loadFavorites();
+        }
+
+        // Convert measurement
+        function convertMeasurement() {
+            const amount = parseFloat(amountInput.value);
+            const unit = unitSelect.value;
+            const ingredient = ingredientSelect.value;
+            
+            if (isNaN(amount) || amount <= 0) {
+                resultText.innerHTML = 'Please enter a valid amount';
+                return;
+            }
+            
+            const grams = amount * conversionData[ingredient][unit];
+            resultText.innerHTML = `${amount} ${unit} of ${ingredient} = <span>${grams.toFixed(1)} grams</span>`;
+        }
+
+        // Display recipes
+        function displayRecipes(recipesToShow) {
+            recipesGrid.innerHTML = '';
+            
+            recipesToShow.forEach(recipe => {
+                const recipeCard = document.createElement('div');
+                recipeCard.className = 'recipe-card';
+                recipeCard.innerHTML = `
+                    <img src="${recipe.image}" alt="${recipe.title}" class="recipe-img">
+                    <div class="recipe-content">
+                        <h3 class="recipe-title">${recipe.title}</h3>
+                        <p class="recipe-description">${recipe.description}</p>
+                        <div class="recipe-actions">
+                            <button class="btn view-recipe" data-id="${recipe.id}">View Recipe</button>
+                            <button class="btn btn-secondary favorite-recipe" data-id="${recipe.id}">
+                                <i class="far fa-heart"></i> Favorite
+                            </button>
+                        </div>
+                    </div>
+                `;
+                recipesGrid.appendChild(recipeCard);
+            });
+            
+            // Add event listeners to the new buttons
+            document.querySelectorAll('.view-recipe').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const recipeId = parseInt(e.target.getAttribute('data-id'));
+                    openRecipeModal(recipeId);
+                });
+            });
+            
+            document.querySelectorAll('.favorite-recipe').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const recipeId = parseInt(e.target.getAttribute('data-id'));
+                    toggleFavoriteById(recipeId);
+                });
+            });
+        }
+
+        // Filter recipes based on search
+        function filterRecipes() {
+            const searchTerm = recipeSearch.value.toLowerCase();
+            const filteredRecipes = recipes.filter(recipe => 
+                recipe.title.toLowerCase().includes(searchTerm) || 
+                recipe.description.toLowerCase().includes(searchTerm)
+            );
+            displayRecipes(filteredRecipes);
+        }
+
+        // Open recipe modal
+        function openRecipeModal(recipeId) {
+            currentRecipe = recipes.find(recipe => recipe.id === recipeId);
+            
+            if (!currentRecipe) return;
+            
+            modalTitle.textContent = currentRecipe.title;
+            modalImage.src = currentRecipe.image;
+            modalTime.textContent = currentRecipe.time;
+            modalServings.textContent = currentRecipe.servings;
+            modalCalories.textContent = currentRecipe.calories;
+            
+            // Populate ingredients
+            modalIngredients.innerHTML = '';
+            currentRecipe.ingredients.forEach(ingredient => {
+                const li = document.createElement('li');
+                li.textContent = ingredient;
+                modalIngredients.appendChild(li);
+            });
+            
+            // Populate steps
+            modalSteps.innerHTML = '';
+            currentRecipe.steps.forEach(step => {
+                const li = document.createElement('li');
+                li.textContent = step;
+                modalSteps.appendChild(li);
+            });
+            
+            // Update favorite button
+            const favorites = getFavorites();
+            if (favorites.includes(currentRecipe.id)) {
+                favoriteBtn.innerHTML = '<i class="fas fa-heart"></i> Remove from Favorites';
+                favoriteBtn.classList.add('btn-secondary');
+            } else {
+                favoriteBtn.innerHTML = '<i class="far fa-heart"></i> Add to Favorites';
+                favoriteBtn.classList.remove('btn-secondary');
+            }
+            
+            recipeModal.style.display = 'block';
+        }
+
+        // Toggle favorite status
+        function toggleFavorite() {
+            if (!currentRecipe) return;
+            
+            const favorites = getFavorites();
+            const index = favorites.indexOf(currentRecipe.id);
+            
+            if (index === -1) {
+                // Add to favorites
+                favorites.push(currentRecipe.id);
+                favoriteBtn.innerHTML = '<i class="fas fa-heart"></i> Remove from Favorites';
+                favoriteBtn.classList.add('btn-secondary');
+            } else {
+                // Remove from favorites
+                favorites.splice(index, 1);
+                favoriteBtn.innerHTML = '<i class="far fa-heart"></i> Add to Favorites';
+                favoriteBtn.classList.remove('btn-secondary');
+            }
+            
+            localStorage.setItem('favoriteRecipes', JSON.stringify(favorites));
+            loadFavorites();
+        }
+
+        // Toggle favorite by ID
+        function toggleFavoriteById(recipeId) {
+            const favorites = getFavorites();
+            const index = favorites.indexOf(recipeId);
+            
+            if (index === -1) {
+                favorites.push(recipeId);
+            } else {
+                favorites.splice(index, 1);
+            }
+            
+            localStorage.setItem('favoriteRecipes', JSON.stringify(favorites));
+            loadFavorites();
+            
+            // If the modal is open and we're toggling the current recipe, update the button
+            if (currentRecipe && currentRecipe.id === recipeId) {
+                if (index === -1) {
+                    favoriteBtn.innerHTML = '<i class="fas fa-heart"></i> Remove from Favorites';
+                    favoriteBtn.classList.add('btn-secondary');
+                } else {
+                    favoriteBtn.innerHTML = '<i class="far fa-heart"></i> Add to Favorites';
+                    favoriteBtn.classList.remove('btn-secondary');
+                }
+            }
+        }
+
+        // Get favorites from localStorage
+        function getFavorites() {
+            const favorites = localStorage.getItem('favoriteRecipes');
+            return favorites ? JSON.parse(favorites) : [];
+        }
+
+        // Load favorites
+        function loadFavorites() {
+            const favorites = getFavorites();
+            const favoriteRecipes = recipes.filter(recipe => favorites.includes(recipe.id));
+            
+            if (favoriteRecipes.length === 0) {
+                favoritesGrid.style.display = 'none';
+                emptyFavorites.style.display = 'block';
+            } else {
+                favoritesGrid.style.display = 'grid';
+                emptyFavorites.style.display = 'none';
+                
+                favoritesGrid.innerHTML = '';
+                favoriteRecipes.forEach(recipe => {
+                    const recipeCard = document.createElement('div');
+                    recipeCard.className = 'recipe-card';
+                    recipeCard.innerHTML = `
+                        <img src="${recipe.image}" alt="${recipe.title}" class="recipe-img">
+                        <div class="recipe-content">
+                            <h3 class="recipe-title">${recipe.title}</h3>
+                            <p class="recipe-description">${recipe.description}</p>
+                            <div class="recipe-actions">
+                                <button class="btn view-recipe" data-id="${recipe.id}">View Recipe</button>
+                                <button class="btn btn-secondary favorite-recipe" data-id="${recipe.id}">
+                                    <i class="fas fa-heart"></i> Favorited
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    favoritesGrid.appendChild(recipeCard);
+                });
+                
+                // Add event listeners to the new buttons
+                document.querySelectorAll('.view-recipe').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const recipeId = parseInt(e.target.getAttribute('data-id'));
+                        openRecipeModal(recipeId);
+                    });
+                });
+                
+                document.querySelectorAll('.favorite-recipe').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const recipeId = parseInt(e.target.getAttribute('data-id'));
+                        toggleFavoriteById(recipeId);
+                    });
+                });
+            }
+        }
+
+        // Share recipe
+        function shareRecipe() {
+            if (!currentRecipe) return;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: currentRecipe.title,
+                    text: `Check out this recipe: ${currentRecipe.title}`,
+                    url: window.location.href
+                })
+                .catch(error => console.log('Error sharing:', error));
+            } else {
+                // Fallback for browsers that don't support Web Share API
+                const shareText = `Check out this recipe: ${currentRecipe.title}`;
+                navigator.clipboard.writeText(shareText)
+                    .then(() => alert('Recipe link copied to clipboard!'))
+                    .catch(err => console.error('Could not copy text: ', err));
+            }
+        }
+
+        // Toggle mobile menu
+        function toggleMobileMenu() {
+            navLinks.classList.toggle('active');
+        }
+
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
